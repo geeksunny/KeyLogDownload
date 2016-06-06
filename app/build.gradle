@@ -1,0 +1,33 @@
+project.version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: "io.spring.dependency-management"
+apply plugin: "de.fuerstenau.buildconfig"
+
+sourceCompatibility = 1.8
+
+mainClassName =  'com.radicalninja.logdownload.Main'
+
+buildConfig {
+    appName = "LogDownload"
+    // Logger's global configuration variables
+    def String str = "String"
+    // Encryption
+    buildConfigField("byte[]", "LOG_CRYPTO_BYTES", project.log_crypto_bytes)
+    // Amazon S3 Upload credentials
+    buildConfigField(str, "AWS_ACCESS_KEY", project.aws_access_key)
+    buildConfigField(str, "AWS_SECRET_KEY", project.aws_secret_key)
+    buildConfigField(str, "AWS_BUCKET_NAME", project.aws_bucket_name)
+    buildConfigField(str, "AWS_BUCKET_REGION", project.aws_bucket_region)
+}
+
+dependencyManagement {
+    imports {
+        mavenBom 'com.amazonaws:aws-java-sdk-bom:1.10.47'
+    }
+}
+
+dependencies {
+    compile 'com.amazonaws:aws-java-sdk-s3'
+}
