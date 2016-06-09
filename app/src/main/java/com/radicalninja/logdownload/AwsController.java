@@ -34,6 +34,7 @@ class AwsController {
 
         final List<File> bucketFiles = new ArrayList<>();
 
+        // todo: catch AmazonS3Exception here!!
         ObjectListing listing = s3.listObjects(bucketName);
         final List<S3ObjectSummary> summaries = listing.getObjectSummaries();
         while (listing.isTruncated()) {
@@ -43,8 +44,10 @@ class AwsController {
 
         for (final S3ObjectSummary summary : summaries) {
             try {
-                // TODO: Add existing file and filesize check. Make overwrite configurable
                 final File destination = new File(localDestination, summary.getKey());
+                if (destination.isFile() && destination.length() == summary.getSize()) {
+                    continue;
+                }
                 final ObjectMetadata object =
                         s3.getObject(new GetObjectRequest(bucketName, summary.getKey()), destination);
                 if (object != null) {
