@@ -1,6 +1,5 @@
 package com.radicalninja.logdownload;
 
-import com.sun.istack.internal.Nullable;
 import org.apache.http.util.TextUtils;
 
 /**
@@ -30,12 +29,12 @@ public class Log {
         System.out.println(msg);
     }
 
-    private void log(@Nullable final String tag, final String msg) {
+    private void log(final String tag, final String msg) {
         final String line = String.format("%s : %s", tag, msg);
         log(line);
     }
 
-    private void log(final char level, @Nullable final String tag, final String msg) {
+    private void log(final char level, final String tag, final String msg) {
         final String line = String.format(" %s| %s%s", level, prepareTag(tag), msg);
         instance.log(line);
     }
@@ -65,23 +64,23 @@ public class Log {
         return String.format("%s : ", newTag);
     }
 
-    public static void v(@Nullable final String tag, final String msg) {
+    public static void v(final String tag, final String msg) {
         instance.log('V', tag, msg);
     }
 
-    public static void i(@Nullable final String tag, final String msg) {
+    public static void i(final String tag, final String msg) {
         instance.log('I', tag, msg);
     }
 
-    public static void d(@Nullable final String tag, final String msg) {
+    public static void d(final String tag, final String msg) {
         instance.log('D', tag, msg);
     }
 
-    public static void w(@Nullable final String tag, final String msg) {
+    public static void w(final String tag, final String msg) {
         instance.log('W', tag, msg);
     }
 
-    public static void e(@Nullable final String tag, final String msg) {
+    public static void e(final String tag, final String msg) {
         instance.log('E', tag, msg);
     }
 
