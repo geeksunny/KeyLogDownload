@@ -1,6 +1,7 @@
 package com.radicalninja.logdownload;
 
 import LogDownload.BuildConfig;
+import com.amazonaws.services.kms.model.InvalidCiphertextException;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
@@ -11,6 +12,7 @@ import java.io.*;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Locale;
 
 public class CipherUtils {
 
@@ -46,12 +48,13 @@ public class CipherUtils {
         return new BufferedReader(new InputStreamReader(cis));
     }
 
-    public static void decryptFile(final File source, final File destination) throws IOException {
+    public static void decryptFile(final File source, final File destination)
+            throws IOException, FileEncryptionException {
         final BufferedReader in;
         try {
             in = readerEncrypted(source);
         } catch (Exception e) {
-            throw new IOException("There was an error reading the encrypted file! Maybe its not encrypted?");
+            throw new FileEncryptionException("There was an error reading the encrypted file! Maybe its not encrypted?", e);
         }
         final BufferedWriter out = new BufferedWriter(new FileWriter(destination));
 
@@ -60,7 +63,7 @@ public class CipherUtils {
             if (line == null) {
                 break;
             }
-            out.write(line);
+            out.write(String.format(Locale.US, "%s\n", line));
         } while (true);
 
         in.close();
@@ -69,6 +72,20 @@ public class CipherUtils {
 
     public static boolean isEncryptedFileEmpty(final File file) {
         return file.length() <= 16 + HEADER_LENGTH;
+    }
+
+    public static class FileEncryptionException extends Exception {
+        public FileEncryptionException(String message) {
+            super(message);
+        }
+
+        public FileEncryptionException(String message, Throwable cause) {
+            super(message, cause);
+        }
+
+        public FileEncryptionException(Throwable cause) {
+            super(cause);
+        }
     }
 
 }

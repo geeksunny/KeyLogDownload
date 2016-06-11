@@ -24,19 +24,17 @@ public class LogPuller {
     public boolean doPullOperation() {
 
         Log.out("Beginning Log Pull Operation.\n");
-
-        // 1. pull files
-        // TODO: List files pulled. (also list files skipped?)
         final List<File> files = aws.downloadBucketContents(BuildConfig.AWS_BUCKET_NAME, localLogDir);
 
-        Log.out("Beginning Log Decryption Operation.\n");
-
-        // 2. decerypt files
-        // TODO: list all files and their success in decryption
-        decryptFileList(files);
+        Log.out("");
+        if (files.isEmpty()) {
+            Log.out("No new files downloaded. Skipping decryption operation.\n");
+        } else {
+            Log.out("Beginning Log Decryption Operation.\n");
+            decryptFileList(files);
+        }
 
         Log.out("Log Pull and Decryption Operation is complete.");
-
         return true;
     }
 
@@ -47,14 +45,16 @@ public class LogPuller {
                     String.format(Locale.US, "%s%s", DECRYPTED_FILENAME_PREFIX, file.getName());
             final File destination = new File(parentDirectory, destinationFilename);
 
-            Log.out(String.format(Locale.US, "IN FILE  => %s", file.getName()));
-            Log.out(String.format(Locale.US, "OUT FILE => %s", destination.getName()));
-
+            Log.out(String.format(Locale.US, "IN FILE  => %s/%s", parentDirectory.getName(), file.getName()));
             try {
                 CipherUtils.decryptFile(file, destination);
-                Log.out("Decryption operation successful!\n");
+                Log.out(String.format(Locale.US, "OUT FILE => %s/%s", parentDirectory.getName(), destination.getName()));
+                Log.out("Decryption operation successful!");
+            } catch (CipherUtils.FileEncryptionException e) {
+                Log.out("File not encrypted. Skipping...");
             } catch (IOException e) {
                 Log.out(e.getMessage());
+            } finally {
                 Log.out("");
             }
         }

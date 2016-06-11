@@ -2,6 +2,9 @@ package com.radicalninja.logdownload;
 
 import org.apache.http.util.TextUtils;
 
+import java.io.File;
+import java.util.Locale;
+
 /**
  * Basic console logger utility inspired by the Android SDK's Log class.
  */
@@ -12,6 +15,14 @@ public class Log {
     private int tagWidth = 25;
     private boolean autoExpandWidth = false;
     private int autoExpandWidthPadding = 3;
+
+    public static String formattedFileName(final File file) {
+        if (file == null) {
+            return "";
+        }
+        final File parent = file.getParentFile();
+        return String.format(Locale.US, "%s/%s", parent.getName(), file.getName());
+    }
 
     public static void setTagWidth(int tagWidth) {
         instance.tagWidth = tagWidth;

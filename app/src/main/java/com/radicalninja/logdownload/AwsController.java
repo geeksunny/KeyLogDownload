@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * A basic implementation of Amazon S3 functionality.
@@ -46,11 +47,13 @@ class AwsController {
             try {
                 final File destination = new File(localDestination, summary.getKey());
                 if (destination.isFile() && destination.length() == summary.getSize()) {
+                    Log.out(String.format(Locale.US, "File already exists. Skipping %s.", Log.formattedFileName(destination)));
                     continue;
                 }
                 final ObjectMetadata object =
                         s3.getObject(new GetObjectRequest(bucketName, summary.getKey()), destination);
                 if (object != null) {
+                    Log.out(String.format(Locale.US, "Successfully downloaded %s.", Log.formattedFileName(destination)));
                     bucketFiles.add(destination);
                 } else {
                     throw new IOException(
