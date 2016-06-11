@@ -64,6 +64,10 @@ public class Log {
         return String.format("%s : ", newTag);
     }
 
+    public static void out(final String msg) {
+        instance.log(msg);
+    }
+
     public static void v(final String tag, final String msg) {
         instance.log('V', tag, msg);
     }
