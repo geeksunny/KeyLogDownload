@@ -8,6 +8,7 @@ buildscript {
     dependencies {
         classpath "io.spring.gradle:dependency-management-plugin:0.5.7.RELEASE"
         classpath 'gradle.plugin.de.fuerstenau:BuildConfigPlugin:1.1.4'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
     }
 }
 
